@@ -138,7 +138,7 @@ class _HomeState extends State<Home> {
       backgroundColor: Colors.white24,
       appBar: appBar,
       body: SingleChildScrollView(
-        child: Column(
+        child: Column( //mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (isLandscape)
