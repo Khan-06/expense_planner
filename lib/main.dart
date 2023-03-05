@@ -1,8 +1,11 @@
 // ignore_for_file: sort_child_properties_last, prefer_const_literals_to_create_immutables
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+
 import 'package:expense_planner/models/Transactoin.dart';
 import './widgets/Transaction_list.dart';
 import './widgets/chart.dart';
-import 'package:flutter/material.dart';
 import './widgets/new_transaction.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -108,9 +111,9 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);;
-    final isLandscape =
-        mediaQuery.orientation == Orientation.landscape;
+    final mediaQuery = MediaQuery.of(context);
+    ;
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
     final appBar = AppBar(
       backgroundColor: Theme.of(context).primaryColor,
       title: Center(
@@ -138,7 +141,8 @@ class _HomeState extends State<Home> {
       backgroundColor: Colors.white24,
       appBar: appBar,
       body: SingleChildScrollView(
-        child: Column( //mainAxisAlignment: MainAxisAlignment.spaceAround,
+        child: Column(
+          //mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (isLandscape)
@@ -155,28 +159,30 @@ class _HomeState extends State<Home> {
                       }),
                 ],
               ),
-            if (!isLandscape)  SizedBox(
-              height: (mediaQuery.size.height -
-                  appBar.preferredSize.height) *
-                  0.3,
-              child: Chart(_recentTransactions),
-            ),
+            if (!isLandscape)
+              SizedBox(
+                height: (mediaQuery.size.height - appBar.preferredSize.height) *
+                    0.3,
+                child: Chart(_recentTransactions),
+              ),
             if (!isLandscape) txListWidget,
             _showChart
                 ? SizedBox(
-                    height: (mediaQuery.size.height -
-                            appBar.preferredSize.height) *
-                        0.7,
+                    height:
+                        (mediaQuery.size.height - appBar.preferredSize.height) *
+                            0.7,
                     child: Chart(_recentTransactions),
                   )
                 : txListWidget,
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _startAddNewTransaction,
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+              onPressed: _startAddNewTransaction,
+              child: const Icon(Icons.add),
+            ),
     );
   }
 }
