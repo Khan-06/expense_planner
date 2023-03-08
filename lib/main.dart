@@ -155,41 +155,43 @@ class _HomeState extends State<Home> {
           0.7,
       child: TransactionList(_userTransactions, _deleteTransaction),
     );
-    final pageBody = SingleChildScrollView(
-      child: Column(
-        //mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (isLandscape)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Show Chart'),
-                Switch.adaptive(
-                    value: _showChart,
-                    onChanged: (val) {
-                      setState(() {
-                        _showChart = val;
-                      });
-                    }),
-              ],
-            ),
-          if (!isLandscape)
-            SizedBox(
-              height:
-                  (mediaQuery.size.height - appBar.preferredSize.height) * 0.3,
-              child: Chart(_recentTransactions),
-            ),
-          if (!isLandscape) txListWidget,
-          _showChart
-              ? SizedBox(
-                  height:
-                      (mediaQuery.size.height - appBar.preferredSize.height) *
-                          0.7,
-                  child: Chart(_recentTransactions),
-                )
-              : txListWidget,
-        ],
+    final pageBody = SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          //mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Show Chart'),
+                  Switch.adaptive(
+                      value: _showChart,
+                      onChanged: (val) {
+                        setState(() {
+                          _showChart = val;
+                        });
+                      }),
+                ],
+              ),
+            if (!isLandscape)
+              SizedBox(
+                height:
+                    (mediaQuery.size.height - appBar.preferredSize.height) * 0.3,
+                child: Chart(_recentTransactions),
+              ),
+            if (!isLandscape) txListWidget,
+            _showChart
+                ? SizedBox(
+                    height:
+                        (mediaQuery.size.height - appBar.preferredSize.height) *
+                            0.7,
+                    child: Chart(_recentTransactions),
+                  )
+                : txListWidget,
+          ],
+        ),
       ),
     );
 
