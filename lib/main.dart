@@ -110,27 +110,63 @@ class _HomeState extends State<Home> {
     });
   }
 
+  List<Widget> _buildLandscapeContent(MediaQueryData mediaQuery,
+      PreferredSizeWidget appBar, Widget txListWidget) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('Show Chart'),
+          Switch.adaptive(
+              value: _showChart,
+              onChanged: (val) {
+                setState(() {
+                  _showChart = val;
+                });
+              }),
+        ],
+      ),
+      _showChart
+          ? SizedBox(
+              height:
+                  (mediaQuery.size.height - appBar.preferredSize.height) * 0.7,
+              child: Chart(_recentTransactions),
+            )
+          : txListWidget
+    ];
+  }
+
+  List<Widget> _buildPortraitContent(MediaQueryData mediaQuery,
+      PreferredSizeWidget appBar, Widget txListWidget) {
+    return [
+      SizedBox(
+        height: (mediaQuery.size.height - appBar.preferredSize.height) * 0.3,
+        child: Chart(_recentTransactions),
+      ),
+      txListWidget,
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final isLandscape = mediaQuery.orientation == Orientation.landscape;
     final PreferredSizeWidget appBar = Platform.isIOS
         ? CupertinoNavigationBar(
-      middle: Text(
-        'Expense Manager',
-        style: Theme.of(context).textTheme.titleLarge,
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          GestureDetector(
-            onTap: _startAddNewTransaction,
-            child: const Icon(CupertinoIcons.add),
+            middle: Text(
+              'Expense Manager',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: _startAddNewTransaction,
+                  child: const Icon(CupertinoIcons.add),
+                )
+              ],
+            ),
           )
-
-        ],
-      ),
-    )
         : PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
             child: AppBar(
@@ -162,41 +198,18 @@ class _HomeState extends State<Home> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (isLandscape)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Show Chart'),
-                  Switch.adaptive(
-                      value: _showChart,
-                      onChanged: (val) {
-                        setState(() {
-                          _showChart = val;
-                        });
-                      }),
-                ],
-              ),
+              ..._buildLandscapeContent(mediaQuery, appBar, txListWidget),
             if (!isLandscape)
-              SizedBox(
-                height:
-                    (mediaQuery.size.height - appBar.preferredSize.height) * 0.3,
-                child: Chart(_recentTransactions),
-              ),
-            if (!isLandscape) txListWidget,
-            _showChart
-                ? SizedBox(
-                    height:
-                        (mediaQuery.size.height - appBar.preferredSize.height) *
-                            0.7,
-                    child: Chart(_recentTransactions),
-                  )
-                : txListWidget,
+              ..._buildPortraitContent(mediaQuery, appBar, txListWidget),
           ],
         ),
       ),
     );
 
     return Platform.isIOS
-        ? CupertinoPageScaffold(child: pageBody, navigationBar: appBar as ObstructingPreferredSizeWidget)
+        ? CupertinoPageScaffold(
+            child: pageBody,
+            navigationBar: appBar as ObstructingPreferredSizeWidget)
         : Scaffold(
             backgroundColor: Colors.white24,
             appBar: appBar,
